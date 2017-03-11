@@ -1,0 +1,77 @@
+# -*-coding=utf-8 -*-
+
+#from app import app
+#@app.route('/')
+#@app.route('/index')
+#def index():
+#	return "hello i am david"
+
+from flask import render_template,request,url_for,redirect
+from app import app
+from getData import getDataMysql
+
+#@app.route('/')
+@app.route('/index')
+def index():
+    user = { 'nickname': 'Miguel' } # fake user
+    posts = [ # fake array of posts
+        {
+            'author': { 'nickname': 'John' },
+            'body': 'Beautiful day in Portland!'
+        },
+        {
+            'author': { 'nickname': 'Susan' },
+            'body': 'The Avengers movie was so cool!'
+        }
+    ]
+    return render_template("index.html",
+        title = 'Home',
+        user = user,
+        posts = posts)
+
+@app.route('/extends')
+def extends():
+ 
+    user = { 'nickname': 'Miguel' } # fake user
+    posts = [ # fake array of posts
+        {
+            'author': { 'nickname': 'John' },
+            'body': 'Beautiful day in Portland!'
+        },
+        {
+            'author': { 'nickname': 'Susan' },
+            'body': 'The Avengers movie was so cool!'
+        },
+	{
+            'author': { 'nickname': 'david' },
+            'body': 'hello!'
+        }
+	
+    ]
+    return render_template("index.html",
+        title = 'Home',
+        user = user,
+        posts = posts)
+
+@app.route("/")
+@app.route("/showLogin")
+def showLogin():
+	return render_template("login.html")
+
+#@app.route('/success')
+def success(someText,result,imgSrc):
+	return 'your request is:</br>%s</br>result is:</br></br> %s<br>your image is:<br> <img src=%s>'%(someText,result,imgSrc)
+
+@app.route('/login',methods=['POST','GET'])
+def login():
+	if request.method=='POST':
+		youAsk=request.form['name']
+		return success(youAsk,getDataMysql(youAsk),"static/figure.png")  
+		#redirect(url_for('success',someText=userName,result=getDataMysql()))
+	else:
+		youAsk=request.args.get("name")
+		return success(youAsk,getDataMysql(youAsk),"static/figure.png")
+		#return redirect(url_for('success',someText=userName,result=getDataMysql()))
+
+
+
